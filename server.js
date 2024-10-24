@@ -5,17 +5,18 @@ const path = require('path');
 const bcrypt = require('bcrypt'); // Importa o bcrypt para hashing de senha
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Use a variável de ambiente PORT do Railway
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Conexão com o banco de dados usando variáveis de ambiente
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root', 
-    password: 'Juju12', 
-    database: 'doacao_sangue' 
+    host: process.env.DB_HOST || 'localhost', // Banco de dados local como fallback
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || 'Juju12',
+    database: process.env.DB_NAME || 'doacao_sangue'
 });
 
 // Rota para exibir o formulário de cadastro
@@ -45,7 +46,7 @@ app.post('/cadastro', async (req, res) => {
             const saltRounds = 10; // Número de rounds para o salt
             const hashedPassword = await bcrypt.hash(senha, saltRounds);
 
-            // Inserir novo usuário com a senha hashed
+            // Inserir novo usuário com a senha hash
             const sql = 'INSERT INTO usuarios (nome, sobrenome, idade, sexo, tipo_sanguineo, telefone, localizacao, email, senha) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
             db.query(sql, [nome, sobrenome, idadeNumero, sexo, tipo_sanguineo, telefone, localizacao, email, hashedPassword], (err, result) => {
                 if (err) {
