@@ -11,13 +11,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Conexão com o banco de dados usando variáveis de ambiente
 const db = mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost', // Banco de dados local como fallback
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASS || 'Juju12',
-    database: process.env.DB_NAME || 'doacao_sangue'
+    host: 'mysql.railway.internal', // Host do Railway
+    user: 'root', // Usuário
+    password: 'LOqmvQjoReKfgMuqxdLTYynRpyzUOPoc', // Senha
+    database: 'doacao_sangue', // Nome do banco de dados
+    port: 3306 // Porta
 });
+
+
+
 
 // Rota para exibir o formulário de cadastro
 app.get('/cadastro', (req, res) => {
